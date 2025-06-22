@@ -1,0 +1,63 @@
+<div class="grid-container">
+
+    <mat-card class="grid-item" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>List years with multiple winners</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-table 
+                [displayedColumns]="columnsYearsWithMostWinners"
+                [dataSource]="dataSourceYearsWithMostWinners">
+            </app-table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="grid-item" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>Top 3 studios with winners</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-table 
+                [displayedColumns]="columnsStudiosWithMostWins"
+                [dataSource]="dataSourceStudiosWithMostWins">
+            </app-table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="grid-item" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>Producers with longest and shortest interval between wins</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <label>Maximun</label>
+            <app-table 
+                [displayedColumns]="columnsAwardIntervals"
+                [dataSource]="dataSourceMaxAwardIntervals">
+            </app-table>
+            <label>Minimum</label>
+            <app-table 
+                [displayedColumns]="columnsAwardIntervals"
+                [dataSource]="dataSourceMinAwardIntervals">
+            </app-table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="grid-item" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>List movie winners by year</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="container-filtro">
+                <input type="number" [(ngModel)]="filterYear" min="0" max="2100" placeholder="Search by year" />
+                <button (click)="getWinnersByYear()">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </div>
+            <app-table 
+                [displayedColumns]="columnsWinnersByYear"
+                [dataSource]="dataSourceWinnersByYear">
+            </app-table>
+        </mat-card-content>
+    </mat-card>
+    
+</div>

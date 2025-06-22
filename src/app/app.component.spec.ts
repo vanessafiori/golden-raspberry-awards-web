@@ -1,15 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { SideMenuComponent } from './shared/components/side-menu/side-menu.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([])
+        RouterModule.forRoot([]),
+        MatToolbarModule,
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        SideMenuComponent
       ],
     }).compileComponents();
   });
@@ -20,16 +24,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'golden-raspberry-awards-web'`, () => {
+  it(`should have as title 'Frontend Angular Test'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('golden-raspberry-awards-web');
+    expect(app.title).toEqual('Frontend Angular Test');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, golden-raspberry-awards-web');
-  });
 });
