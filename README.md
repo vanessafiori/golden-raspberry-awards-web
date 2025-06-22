@@ -1,59 +1,81 @@
-# GoldenRaspberryAwardsWeb
+<h2 align="center">
+    Golden Raspberry Awards Frontend
+</h2>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
 
-## Development server
+## Descrição
 
-To start a local development server, run:
+Aplicação frontend desenvolvida em [Angular](https://github.com/angular/angular-cli) para visualização das estatísticas dos filmes indicados e vencedores do prêmio Golden Raspberry Awards.
+
+
+## Funcionalidades
+- Visualização dos produtores com maior e menor intervalo entre vitórias.
+- Listagem dos anos com múltiplos vencedores.
+- Listagem dos três estúdios com mais vitórias.
+- Pesquisa de filmes vencedores por ano.
+- Paginação de resultados na listagem de filmes.
+
+
+## Tecnologias Utilizadas
+
+- [Angular](https://github.com/angular/angular-cli) - Framework principal
+- [TypeScript](https://www.typescriptlang.org/) - Linguagem
+- Karma & Jasmine - Testes unitários
+
+
+## Setup do Projeto
+
+- Node.js v20+
+- Angular CLI v19+
+- npm
 
 ```bash
-ng serve
+$ git clone https://github.com/vanessafiori/golden-raspberry-awards-web.git
+$ cd golden-raspberry-awards-web
+$ npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Executando a aplicação
 
 ```bash
-ng generate component component-name
+# Desenvolvimento
+$ ng serve
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+Acesse em: http://localhost:4200
 
 ## Building
-
-To build the project run:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Executando os Testes
 
 ```bash
-ng test
+# Testes unitários
+$ ng test
 ```
 
-## Running end-to-end tests
+## Estrutura de Telas
 
-For end-to-end (e2e) testing, run:
+- /dashboard - Visão geral com estatísticas dos vencedores.
+- /movies - Listagem paginada dos filmes.
 
-```bash
-ng e2e
-```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Integração com API
 
-## Additional Resources
+Esta aplicação consome os seguintes endpoints:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- GET /movies?page=9&size=99&winner=true&year=2018 
+- GET /movies?projection=years-with-multiple-winners
+- GET /movies?projection=studios-with-win-count
+- GET /movies?projection=max-min-win-interval-for-producers
+- GET /movies?winner=true&year=2018
+
+
+## Contato
+
+Vanessa Fiori
+- Portfólio - https://vanessa-fiori.web.app/
+- Linkedin - https://www.linkedin.com/in/vanessa-fiori-a6399a211/
