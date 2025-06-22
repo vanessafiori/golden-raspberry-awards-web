@@ -29,12 +29,16 @@
             <mat-card-title>Producers with longest and shortest interval between wins</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <label>Maximun</label>
+            <div class="subtitle">
+                <label>Maximun</label>
+            </div>
             <app-table 
                 [displayedColumns]="columnsAwardIntervals"
                 [dataSource]="dataSourceMaxAwardIntervals">
             </app-table>
-            <label>Minimum</label>
+            <div class="subtitle">
+                <label>Minimum</label>
+            </div>
             <app-table 
                 [displayedColumns]="columnsAwardIntervals"
                 [dataSource]="dataSourceMinAwardIntervals">

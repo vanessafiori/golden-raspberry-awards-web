@@ -3,12 +3,10 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
   gap: 40px;
-  padding: 16px;
 }
 
 .grid-item {
   background-color: white;
-  padding: 24px;
   text-align: center;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -20,6 +18,11 @@
 
   mat-card-content {
     margin-top: 15px;
+  }
+
+  .subtitle {
+    margin: 5px 0;
+    text-align: start;
   }
 }
 
@@ -45,4 +48,10 @@
       border-radius: 50%;
       transition: background-color 0.2s ease;
     }
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
 }
