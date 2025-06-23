@@ -28,6 +28,7 @@ export class MoviesComponent {
   ) { }
 
   ngAfterViewInit() {
+    this.paginator._intl.itemsPerPageLabel = '';
     this.dataSource.paginator = this.paginator;
     this.configureFilter();
     this.loadInitialData();

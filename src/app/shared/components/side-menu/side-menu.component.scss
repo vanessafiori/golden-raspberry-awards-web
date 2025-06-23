@@ -9,7 +9,6 @@
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     color: #242424;
     overflow-y: auto;
-    width: 100px;
   }
 
   .menu ul {
@@ -32,6 +31,6 @@
   
 .menu li a:hover,
 .menu li a.active {
-  background-color: var(--theme-hover-active);
   font-weight: 500;
+  color: blue;
 }

@@ -1,21 +1,25 @@
-mat-paginator {
-  background-color: white;
-}
-
 mat-card {
-  min-width: 500px;
   background-color: white;
-  margin-right: 20px;
   border-radius: 5px;
+  overflow-x: auto;
 }
 
 table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
   background-color: white;
-    th {
-      text-align: center;
-    }
-}
 
+  th {
+    text-align: center;
+  }
+
+  td {
+    white-space: nowrap;
+    text-align: left;
+    padding: 3px;
+  }
+}
 .container-inputs {
   display: flex;
   flex-direction: column;
@@ -57,4 +61,10 @@ input {
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+  table {
+    min-width: 100%;
+  }
 }
