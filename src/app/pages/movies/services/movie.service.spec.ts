@@ -27,11 +27,11 @@ describe('MoviesService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('listAll should make GET request with correct params', () => {
+  it('getMovies should make GET request with correct params', () => {
     const mockRequest = { page: 2, size: 10 };
     const mockResponse = { data: ['movie1', 'movie2'] };
 
-    service.listAll(mockRequest).subscribe(response => {
+    service.getMovies(mockRequest).subscribe(response => {
       expect(response).toEqual(mockResponse);
     });
 

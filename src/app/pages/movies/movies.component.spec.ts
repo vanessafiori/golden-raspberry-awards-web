@@ -1,125 +1,115 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { MoviesComponent } from './movies.component';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { MoviesService } from './services/movies.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
+import { MoviesComponent } from './movies.component';
+import { MoviesService } from './services/movies.service';
 
 describe('MoviesComponent', () => {
   let component: MoviesComponent;
   let fixture: ComponentFixture<MoviesComponent>;
   let mockMoviesService: jasmine.SpyObj<MoviesService>;
+  let toastrSpy: jasmine.SpyObj<ToastrService>;
 
   beforeEach(async () => {
-    mockMoviesService = jasmine.createSpyObj('MoviesService', ['listAll']);
+    mockMoviesService = jasmine.createSpyObj('MoviesService', ['getMovies']);
+    toastrSpy = jasmine.createSpyObj('ToastrService', ['error']);
 
     await TestBed.configureTestingModule({
       declarations: [MoviesComponent],
       imports: [
-        HttpClientModule,
-        ToastrModule.forRoot(),
-        MatCardModule,
-        MatPaginatorModule,
+        FormsModule,
         MatTableModule,
+        MatPaginatorModule,
+        MatCardModule,
+        BrowserAnimationsModule
       ],
       providers: [
         { provide: MoviesService, useValue: mockMoviesService },
-      ],
+        { provide: ToastrService, useValue: toastrSpy }
+      ]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(MoviesComponent);
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    mockMoviesService.listAll.and.returnValue(of({ content: [], totalElements: 0 }));
-    fixture.detectChanges();
-
-    expect(component).toBeTruthy();
-  });
-
-  it('should load movies and update dataSource', () => {
+  it('should load movies on init', fakeAsync(() => {
     const mockResponse = {
       content: [{ id: 1, year: 2020, title: 'Test Movie', winner: true }],
-      totalElements: 1,
+      totalElements: 1
     };
 
-    mockMoviesService.listAll.and.returnValue(of(mockResponse));
-    fixture.detectChanges();
+    mockMoviesService.getMovies.and.returnValue(of(mockResponse));
 
-    expect(mockMoviesService.listAll).toHaveBeenCalledWith({ page: 0, size: 5 });
+    fixture.detectChanges();
+    tick();
+
     expect(component.dataSource.data).toEqual(mockResponse.content);
-  });
+    expect(component.length).toBe(1);
+  }));
 
-  it('should fetch all data if totalElements > 5', () => {
-    const initialResponse = { content: [], totalElements: 10 };
-    const fullResponse = { content: [{ id: 1, title: 'Full Movie', year: 2000, winner: false }], totalElements: 10 };
-
-    mockMoviesService.listAll.withArgs({ page: 0, size: 5 }).and.returnValue(of(initialResponse));
-    mockMoviesService.listAll.withArgs({ page: 0, size: 10 }).and.returnValue(of(fullResponse));
-
-    component.loadInitialData();
-
-    expect(mockMoviesService.listAll).toHaveBeenCalledTimes(2);
-    expect(component.dataSource.data).toEqual(fullResponse.content);
-  });
-
-  it('should show error message if API fails', () => {
-    const toastrSpy = spyOn(TestBed.inject(ToastrService), 'error');
-    mockMoviesService.listAll.and.returnValue(throwError(() => new Error('API Error')));
-    
+  it('should show error message if API fails', fakeAsync(() => {
+    mockMoviesService.getMovies.and.returnValue(throwError(() => new Error('API error')));
     fixture.detectChanges();
-    
-    expect(toastrSpy).toHaveBeenCalledWith('Erro ao listar os filmes.');
-  });
+    tick();
 
-  it('should filter data based on filterPredicate', () => {
-    const testData = [
-        { id: 1, year: 2020, title: 'Movie A', winner: true },
-        { id: 2, year: 2021, title: 'Movie B', winner: false },
-    ];
-    component.dataSource.data = testData;
-    component.configureFilter();
+    expect(toastrSpy.error).toHaveBeenCalled();
+  }));
 
-    component.filters['year'] = '2020';
-    component.dataSource.filter = JSON.stringify(component.filters);
-    expect(component.dataSource.filteredData.length).toBe(1);
-    expect(component.dataSource.filteredData[0].title).toBe('Movie A');
+  it('should apply winner filter and reload data', fakeAsync(() => {
+    const mockResponse = {
+      content: [{ id: 2, year: 2019, title: 'Filtered', winner: false }],
+      totalElements: 1
+    };
 
-    component.filters['winner'] = 'false';
-    component.dataSource.filter = JSON.stringify(component.filters);
-    expect(component.dataSource.filteredData.length).toBe(0);
-  });
+    mockMoviesService.getMovies.and.returnValue(of(mockResponse));
+    component.filterValues.winner = 'false';
+    component.filter('winner');
+    tick();
 
-  it('should initialize paginator with correct settings', () => {
-    mockMoviesService.listAll.and.returnValue(of({ content: [], totalElements: 0 }));
-    fixture.detectChanges();
+    expect(component.request.winner).toBe('false');
+    expect(component.dataSource.data).toEqual(mockResponse.content);
+  }));
 
-    expect(component.paginator.pageSizeOptions).toEqual([5, 10, 20]);
-    expect(component.paginator.showFirstLastButtons).toBeTrue();
-  });
-  
-  it('should handle empty response gracefully', () => {
-    mockMoviesService.listAll.and.returnValue(of({ content: [], totalElements: 0 }));
-    fixture.detectChanges();
+  it('should ignore year filter if invalid length', () => {
+    component.filterValues.year = 123;
+    component.filter('year');
 
     expect(component.dataSource.data).toEqual([]);
-    expect(component.totalElements).toBe(0);
+    expect(component.request.year).toBeUndefined();
   });
 
-  it('should show error if second API call fails', () => {
-    const toastrSpy = spyOn(TestBed.inject(ToastrService), 'error');
-    mockMoviesService.listAll
-        .withArgs({ page: 0, size: 5 }).and.returnValue(of({ content: [], totalElements: 10 }))
-        .withArgs({ page: 0, size: 10 }).and.returnValue(throwError(() => new Error('API Error')));
+  it('should apply year filter and reload data if valid', fakeAsync(() => {
+    const mockResponse = {
+      content: [{ id: 3, year: 2020, title: 'Another', winner: false }],
+      totalElements: 1
+    };
 
-    component.loadInitialData();
-    expect(toastrSpy).toHaveBeenCalledWith('Erro ao listar os filmes.');
-  });
+    mockMoviesService.getMovies.and.returnValue(of(mockResponse));
+    component.filterValues.year = 2020;
+    component.filter('year');
+    tick();
 
+    expect(component.request.year).toBe(2020);
+    expect(component.dataSource.data).toEqual(mockResponse.content);
+  }));
+
+  it('should handle pagination', fakeAsync(() => {
+    const mockResponse = {
+      content: [{ id: 4, year: 2021, title: 'Paginated', winner: true }],
+      totalElements: 2
+    };
+
+    mockMoviesService.getMovies.and.returnValue(of(mockResponse));
+    component.handlePageEvent({ pageIndex: 1, pageSize: 10, length: 2 } as any);
+    tick();
+
+    expect(component.pageIndex).toBe(1);
+    expect(component.dataSource.data).toEqual(mockResponse.content);
+  }));
 });

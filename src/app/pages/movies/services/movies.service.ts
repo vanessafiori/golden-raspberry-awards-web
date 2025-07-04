@@ -14,8 +14,14 @@ export class MoviesService {
       private http: HttpClient
   ) {}
 
-  listAll(request: any): Observable<any> {
-    const params = `page=${request.page}&size=${request.size}`
+  getMovies(request: any): Observable<any> {
+    let params = `page=${request.page}&size=${request.size}`;
+    if(request.winner){
+      params += `&winner=${request.winner}`
+    }
+    if(request.year){
+      params += `&year=${request.year}`
+    }
     return this.http.get<any>(`${this.apiUrl}?${params}`);
   }
 
